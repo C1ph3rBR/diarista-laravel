@@ -1,0 +1,9 @@
+# VSCode
+.vscode/
+
+# Arquivos de sessão/SQL temporários
+*.session.sql
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
