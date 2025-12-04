@@ -1,59 +1,178 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Diarista Laravel 🧹
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplicação simples para **cadastro de clientes** e **solicitação de orçamento** de serviço de diarista.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🧰 Stack
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Laravel 12 (PHP)  
+- MySQL (via Docker)  
+- Docker + Docker Compose  
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🚀 Como rodar o projeto
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 1. Pré-requisitos
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- [Git](https://git-scm.com/)  
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (com Docker Compose instalado e habilitado)
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 2. Clonar o repositório
 
-### Premium Partners
+```bash
+git clone https://github.com/C1ph3rBR/diarista-laravel.git
+cd diarista-laravel
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Dentro da pasta `diarista-laravel` existe o código Laravel em `app/`.
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 3. Criar o `.env` do Laravel
 
-## Code of Conduct
+Crie o `.env` a partir do `.env.example`:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+**Windows (CMD/PowerShell):**
 
-## Security Vulnerabilities
+```bash
+copy app\.env.example app\.env
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**Linux / MacOS:**
 
-## License
+```bash
+cp app/.env.example app/.env
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+O `.env.example` já está configurado para usar o banco do Docker:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=diarista
+DB_USERNAME=laravel
+DB_PASSWORD=secret
+```
+
+---
+
+### 4. Subir os containers
+
+Na raiz do projeto (`diarista-laravel`):
+
+```bash
+docker compose up -d
+```
+
+Isso sobe:
+
+- `app` → container com PHP + Apache + Laravel  
+- `db` → container MySQL (exposto na porta `3307` do host)
+
+---
+
+### 5. Instalar dependências do Laravel
+
+Se for a primeira vez rodando na máquina:
+
+```bash
+docker compose run --rm app composer install
+```
+
+---
+
+### 6. Gerar a `APP_KEY`
+
+```bash
+docker compose exec app php artisan key:generate
+```
+
+---
+
+### 7. Rodar as migrations (criar tabelas)
+
+```bash
+docker compose exec app php artisan migrate
+```
+
+---
+
+## 🌐 Acessar a aplicação
+
+Com os containers rodando, acesse:
+
+```text
+http://localhost:8000/diarista
+```
+
+Nessa página é possível:
+
+- Cadastrar os dados do cliente  
+- Informar detalhes do imóvel  
+- Solicitar orçamento de diarista  
+
+Os dados são gravados nas tabelas:
+
+- `clients`  
+- `cleaning_quotes`  
+
+---
+
+## 🗄️ Acessar o banco de dados (opcional)
+
+O MySQL roda no container `db` e está exposto na porta `3307`.
+
+**Dados da conexão:**
+
+- Host: `localhost`  
+- Porta: `3307`  
+- Database: `diarista`  
+- Usuário: `laravel`  
+- Senha: `secret`  
+
+**Exemplo via linha de comando:**
+
+```bash
+docker compose exec db mysql -ularavel -psecret diarista
+```
+
+Você pode usar qualquer cliente (DBeaver, MySQL Workbench, extensões do VS Code etc.)
+
+---
+
+## 🔧 Comandos úteis
+
+Subir containers em background:
+
+```bash
+docker compose up -d
+```
+
+Ver logs da aplicação:
+
+```bash
+docker compose logs -f app
+```
+
+Parar os containers:
+
+```bash
+docker compose down
+```
+
+---
+
+## 📝 Observação (Windows + permissões)
+
+Se aparecer erro de permissão em `storage` ou `bootstrap/cache` (ex: `Failed to open stream: Permission denied`), rode:
+
+```bash
+docker compose exec app bash -c "cd /var/www/html/app && chmod -R 777 storage bootstrap/cache"
+```
+
+---
